@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,57 +14,57 @@
   <p id="message"></p>
   <script src="script.js"></script>
 
-<div style="margin-top:40px; text-align:center;">
-  <a href="https://www.youtube.com/@JordanAP" target="_blank" style="color:#6aaa64; font-family:inherit; font-size:1.2em; margin-right:20px;">
-    Watch JordanAP on YouTube
-  </a>
-  <a href="https://www.twitch.tv/jordanxap" target="_blank" style="color:#6aaa64; font-family:inherit; font-size:1.2em;">
-    Watch jordanxap on Twitch
-  </a>
-</div>
-<!-- Stats Modal -->
-<div id="stats-modal" class="modal" style="display:none;">
-  <div class="modal-content">
-    <span class="close" id="close-modal">&times;</span>
-    <h2>STATISTICS</h2>
-    <div style="display:flex; justify-content:center; gap:40px; margin-bottom:20px;">
-      <div>
-        <div style="font-size:2em;">1</div>
-        <div>Played</div>
+  <div style="margin-top:40px; text-align:center;">
+    <a href="https://www.youtube.com/@JordanAP" target="_blank" style="color:#6aaa64; font-family:inherit; font-size:1.2em; margin-right:20px;">
+      Watch JordanAP on YouTube
+    </a>
+    <a href="https://www.twitch.tv/jordanxap" target="_blank" style="color:#6aaa64; font-family:inherit; font-size:1.2em;">
+      Watch jordanxap on Twitch
+    </a>
+  </div>
+  <!-- Stats Modal -->
+  <div id="stats-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <span class="close" id="close-modal">&times;</span>
+      <h2>STATISTICS</h2>
+      <div style="display:flex; justify-content:center; gap:40px; margin-bottom:20px;">
+        <div>
+          <div id="stat-played" style="font-size:2em;">0</div>
+          <div>Played</div>
+        </div>
+        <div>
+          <div id="stat-win-percent" style="font-size:2em;">0%</div>
+          <div>Win %</div>
+        </div>
+        <div>
+          <div id="stat-current-streak" style="font-size:2em;">0</div>
+          <div>Current Streak</div>
+        </div>
+        <div>
+          <div id="stat-max-streak" style="font-size:2em;">0</div>
+          <div>Max Streak</div>
+        </div>
       </div>
       <div>
-        <div style="font-size:2em;">100</div>
-        <div>Win %</div>
+        <div style="margin-bottom:10px;">GUESS DISTRIBUTION</div>
+        <div id="guess-bars" style="margin:0 auto; max-width:350px;">
+          <div class="guess-bar-row"><span class="guess-label">1</span><div class="guess-bar" id="bar-1"></div><span class="guess-count" id="count-1">0</span></div>
+          <div class="guess-bar-row"><span class="guess-label">2</span><div class="guess-bar" id="bar-2"></div><span class="guess-count" id="count-2">0</span></div>
+          <div class="guess-bar-row"><span class="guess-label">3</span><div class="guess-bar" id="bar-3"></div><span class="guess-count" id="count-3">0</span></div>
+          <div class="guess-bar-row"><span class="guess-label">4</span><div class="guess-bar" id="bar-4"></div><span class="guess-count" id="count-4">0</span></div>
+          <div class="guess-bar-row"><span class="guess-label">5</span><div class="guess-bar" id="bar-5"></div><span class="guess-count" id="count-5">0</span></div>
+          <div class="guess-bar-row"><span class="guess-label">6</span><div class="guess-bar" id="bar-6"></div><span class="guess-count" id="count-6">0</span></div>
+        </div>
       </div>
-      <div>
-        <div style="font-size:2em;">0</div>
-        <div>Current Streak</div>
+      <div style="margin-top:20px;">
+        <button id="play-again" style="background:#6aaa64; color:white; font-size:1.2em; padding:10px 30px; border:none; border-radius:5px; margin-right:20px; cursor:pointer;">
+          PLAY AGAIN! &#x21bb;
+        </button>
+        <button id="share" style="background:#787c7e; color:white; font-size:1.2em; padding:10px 30px; border:none; border-radius:5px; cursor:pointer;">
+          SHARE &#x1f517;
+        </button>
       </div>
-      <div>
-        <div style="font-size:2em;">0</div>
-        <div>Max Streak</div>
-      </div>
-    </div>
-    <div>
-      <div style="margin-bottom:10px;">GUESS DISTRIBUTION</div>
-<div id="guess-bars" style="margin:0 auto; max-width:350px;">
-  <div class="guess-bar-row"><span class="guess-label">1</span><div class="guess-bar" id="bar-1"></div><span class="guess-count" id="count-1">0</span></div>
-  <div class="guess-bar-row"><span class="guess-label">2</span><div class="guess-bar" id="bar-2"></div><span class="guess-count" id="count-2">0</span></div>
-  <div class="guess-bar-row"><span class="guess-label">3</span><div class="guess-bar" id="bar-3"></div><span class="guess-count" id="count-3">0</span></div>
-  <div class="guess-bar-row"><span class="guess-label">4</span><div class="guess-bar" id="bar-4"></div><span class="guess-count" id="count-4">0</span></div>
-  <div class="guess-bar-row"><span class="guess-label">5</span><div class="guess-bar" id="bar-5"></div><span class="guess-count" id="count-5">0</span></div>
-  <div class="guess-bar-row"><span class="guess-label">6</span><div class="guess-bar" id="bar-6"></div><span class="guess-count" id="count-6">0</span></div>
-</div>
-    </div>
-    <div style="margin-top:20px;">
-      <button id="play-again" style="background:#6aaa64; color:white; font-size:1.2em; padding:10px 30px; border:none; border-radius:5px; margin-right:20px; cursor:pointer;">
-        PLAY AGAIN! &#x21bb;
-      </button>
-      <button id="share" style="background:#787c7e; color:white; font-size:1.2em; padding:10px 30px; border:none; border-radius:5px; cursor:pointer;">
-        SHARE &#x1f517;
-      </button>
     </div>
   </div>
-</div>
 </body>
 </html>

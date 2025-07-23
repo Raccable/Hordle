@@ -1,27 +1,29 @@
+// script.js
 const correctAnswer = "HORDA";
 let currentRow = 0;
 let currentCol = 0;
 let board = [];
-let gamesPlayed = 0;
-let gamesWon = 0;
-let currentStreak = 0;
-let maxStreak = 0;
-let guessDistribution = [0, 0, 0, 0, 0, 0]; // index 0 = 1 guess, index 5 = 6 guesses
+let stats = {
+  gamesPlayed: 0,
+  gamesWon: 0,
+  currentStreak: 0,
+  maxStreak: 0,
+  guessDistribution: [0, 0, 0, 0, 0, 0]
+};
 
 window.onload = function () {
-  console.log("Script loaded!"); // Debug
+  loadStats();
   initBoard();
   initKeyboard();
 
-  // Modal button handlers
-  document.getElementById("close-modal").onclick = function() {
+  document.getElementById("close-modal").onclick = () => {
     document.getElementById("stats-modal").style.display = "none";
   };
-  document.getElementById("play-again").onclick = function() {
+
+  document.getElementById("play-again").onclick = () => {
     currentRow = 0;
     currentCol = 0;
     board = [];
-    // Clear tiles
     for (let r = 0; r < 6; r++) {
       for (let c = 0; c < 5; c++) {
         const tile = document.getElementById(`tile-${r}-${c}`);
@@ -31,15 +33,14 @@ window.onload = function () {
         }
       }
     }
-    // Re-enable keyboard
     const keys = document.querySelectorAll(".key");
     keys.forEach(k => k.disabled = false);
-    // Reset message
+
     const msg = document.getElementById("message");
     if (msg) msg.textContent = "";
-    // Hide modal
+
     document.getElementById("stats-modal").style.display = "none";
-    // Re-initialize board array
+
     for (let r = 0; r < 6; r++) {
       let row = [];
       for (let c = 0; c < 5; c++) {
@@ -48,7 +49,8 @@ window.onload = function () {
       board[r] = row;
     }
   };
-  document.getElementById("share").onclick = function() {
+
+  document.getElementById("share").onclick = () => {
     navigator.clipboard.writeText("I played HORDLE! https://raccable.github.io/Hordle/");
     alert("Result copied to clipboard!");
   };
@@ -56,6 +58,8 @@ window.onload = function () {
 
 function initBoard() {
   const boardElement = document.getElementById("board");
+  boardElement.innerHTML = "";
+  board = [];
   for (let r = 0; r < 6; r++) {
     let row = [];
     for (let c = 0; c < 5; c++) {
@@ -76,6 +80,7 @@ function initKeyboard() {
     "⏎ZXCVBNM⌫"
   ];
   const keyboard = document.getElementById("keyboard");
+  keyboard.innerHTML = "";
   keys.forEach((row) => {
     for (let key of row) {
       const btn = document.createElement("button");
@@ -91,7 +96,6 @@ function initKeyboard() {
         btn.onclick = () => handleKey(key);
       }
       keyboard.appendChild(btn);
-      // Add line break after P and after L
       if (key === "P" || key === "L") {
         const br = document.createElement("br");
         keyboard.appendChild(br);
@@ -148,18 +152,21 @@ function revealRow(guess) {
   if (guess === correctAnswer) {
     if (message) message.textContent = "🎉 You guessed it: HORDA!";
     disableInput();
-    gamesPlayed++;
-    gamesWon++;
-    currentStreak++;
-    if (currentStreak > maxStreak) maxStreak = currentStreak;
-    guessDistribution[currentRow]++;
+    stats.gamesPlayed++;
+    stats.gamesWon++;
+    stats.currentStreak++;
+    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+    stats.guessDistribution[currentRow]++;
+    saveStats();
     updateStatsUI();
     showStatsModal();
   } else if (currentRow === 5) {
     if (message) message.textContent = "💀 The word was HORDA.";
     disableInput();
-    gamesPlayed++;
-    currentStreak = 0;
+    stats.gamesPlayed++;
+    if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
+    stats.currentStreak = 0;
+    saveStats();
     updateStatsUI();
     showStatsModal();
   } else {
@@ -189,35 +196,47 @@ function showStatsModal() {
 }
 
 function updateGuessDistribution() {
-  let counts = [];
-  for (let i = 1; i <= 6; i++) {
-    const countElem = document.getElementById(`count-${i}`);
-    counts[i-1] = countElem ? parseInt(countElem.textContent) || 0 : 0;
-  }
+  let counts = stats.guessDistribution;
   const max = Math.max(...counts, 1);
   for (let i = 1; i <= 6; i++) {
     const bar = document.getElementById(`bar-${i}`);
     const countElem = document.getElementById(`count-${i}`);
     const count = counts[i-1];
     if (bar) bar.style.width = (count === 0 ? 10 : (220 * count / max)) + "px";
-    if (bar) bar.classList.toggle("active", count > 0 && count === Math.max(...counts));
+    if (bar) bar.classList.toggle("active", count > 0 && count === max);
     if (countElem) countElem.textContent = count;
   }
 }
 
 function updateStatsUI() {
-  // Defensive checks for all stats elements
-  const playedDiv = document.querySelector("#stats-modal .modal-content > div:nth-child(2) > div:nth-child(1) > div");
-  if (playedDiv) playedDiv.textContent = gamesPlayed;
-  const winDiv = document.querySelector("#stats-modal .modal-content > div:nth-child(2) > div:nth-child(2) > div");
-  if (winDiv) winDiv.textContent = gamesPlayed ? Math.round((gamesWon / gamesPlayed) * 100) : 0;
-  const streakDiv = document.querySelector("#stats-modal .modal-content > div:nth-child(2) > div:nth-child(3) > div");
-  if (streakDiv) streakDiv.textContent = currentStreak;
-  const maxStreakDiv = document.querySelector("#stats-modal .modal-content > div:nth-child(2) > div:nth-child(4) > div");
-  if (maxStreakDiv) maxStreakDiv.textContent = maxStreak;
+  document.getElementById('stat-played').textContent = stats.gamesPlayed;
+  document.getElementById('stat-win-percent').textContent = stats.gamesPlayed ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100) + "%" : "0%";
+  document.getElementById('stat-current-streak').textContent = stats.currentStreak;
+  document.getElementById('stat-max-streak').textContent = stats.maxStreak;
+
   for (let i = 0; i < 6; i++) {
     const countElem = document.getElementById(`count-${i+1}`);
-    if (countElem) countElem.textContent = guessDistribution[i];
+    if (countElem) countElem.textContent = stats.guessDistribution[i];
   }
   updateGuessDistribution();
+}
+
+function saveStats() {
+  localStorage.setItem('hordleStats', JSON.stringify(stats));
+}
+
+function loadStats() {
+  const statsJSON = localStorage.getItem('hordleStats');
+  if (statsJSON) {
+    stats = JSON.parse(statsJSON);
+  } else {
+    stats = {
+      gamesPlayed: 0,
+      gamesWon: 0,
+      currentStreak: 0,
+      maxStreak: 0,
+      guessDistribution: [0, 0, 0, 0, 0, 0]
+    };
+  }
+  updateStatsUI();
 }
