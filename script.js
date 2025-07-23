@@ -11,16 +11,42 @@ let stats = {
   guessDistribution: [0, 0, 0, 0, 0, 0]
 };
 
+const COOLDOWN_HOURS = 12;
+const LAST_PLAY_KEY = 'hordleLastPlay';
+
 window.onload = function () {
   loadStats();
   initBoard();
   initKeyboard();
+
+  const lastPlay = localStorage.getItem(LAST_PLAY_KEY);
+  if (lastPlay) {
+    const lastPlayTime = new Date(parseInt(lastPlay, 10));
+    const now = new Date();
+    const diffHours = (now - lastPlayTime) / (1000 * 60 * 60);
+    if (diffHours < COOLDOWN_HOURS) {
+      disableInput();
+      const msg = document.getElementById("message");
+      if (msg) msg.textContent = `You can play again in ${Math.ceil(COOLDOWN_HOURS - diffHours)} hour(s).`;
+    }
+  }
 
   document.getElementById("close-modal").onclick = () => {
     document.getElementById("stats-modal").style.display = "none";
   };
 
   document.getElementById("play-again").onclick = () => {
+    const lastPlay = localStorage.getItem(LAST_PLAY_KEY);
+    if (lastPlay) {
+      const lastPlayTime = new Date(parseInt(lastPlay, 10));
+      const now = new Date();
+      const diffHours = (now - lastPlayTime) / (1000 * 60 * 60);
+      if (diffHours < COOLDOWN_HOURS) {
+        alert(`You must wait ${Math.ceil(COOLDOWN_HOURS - diffHours)} more hour(s) before playing again.`);
+        return;
+      }
+    }
+
     currentRow = 0;
     currentCol = 0;
     board = [];
@@ -158,6 +184,7 @@ function revealRow(guess) {
     if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
     stats.guessDistribution[currentRow]++;
     saveStats();
+    localStorage.setItem(LAST_PLAY_KEY, Date.now().toString());
     updateStatsUI();
     showStatsModal();
   } else if (currentRow === 5) {
@@ -167,6 +194,7 @@ function revealRow(guess) {
     if (stats.currentStreak > stats.maxStreak) stats.maxStreak = stats.currentStreak;
     stats.currentStreak = 0;
     saveStats();
+    localStorage.setItem(LAST_PLAY_KEY, Date.now().toString());
     updateStatsUI();
     showStatsModal();
   } else {
