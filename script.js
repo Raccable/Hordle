@@ -29,7 +29,7 @@ function initKeyboard() {
   const keys = [
     "QWERTYUIOP",
     "ASDFGHJKL",
-    "ENTERZXCVBNM⌫"
+    "⏎ZXCVBNM⌫"
   ];
   const keyboard = document.getElementById("keyboard");
 
@@ -38,12 +38,22 @@ function initKeyboard() {
       const btn = document.createElement("button");
       btn.textContent = key;
       btn.classList.add("key");
-      if (key === "ENTER" || key === "⌫") btn.classList.add("wide");
-      btn.onclick = () => handleKey(key);
+      if (key === "⏎") {
+        btn.classList.add("wide");
+        btn.onclick = () => handleKey("ENTER");
+      } else if (key === "⌫") {
+        btn.classList.add("wide");
+        btn.onclick = () => handleKey("⌫");
+      } else {
+        btn.onclick = () => handleKey(key);
+      }
       keyboard.appendChild(btn);
+      // Add line break after P and after L
+      if (key === "P" || key === "L") {
+        const br = document.createElement("br");
+        keyboard.appendChild(br);
+      }
     }
-    const br = document.createElement("br");
-    keyboard.appendChild(br);
   });
 }
 

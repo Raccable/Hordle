@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap');
+
+
 body {
   background-color: #121213;
   color: #ffffff;
-  font-family: sans-serif;
+  font-family: 'UnifrakturCook', 'Old English Text MT', cursive, serif;
   text-align: center;
   margin: 0;
   padding: 20px;
@@ -38,11 +41,10 @@ body {
 .gray { background-color: #787c7e; }
 
 #keyboard {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: block;
   max-width: 600px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .key {
