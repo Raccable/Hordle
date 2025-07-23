@@ -108,15 +108,20 @@ function revealRow(guess) {
   }
 
   if (guess === correctAnswer) {
-    message.textContent = "🎉 You guessed it: HORDA!";
-    disableInput();
-  } else if (currentRow === 5) {
-    message.textContent = "💀 The word was HORDA.";
-    disableInput();
-  } else {
-    currentRow++;
-    currentCol = 0;
-  }
+  message.textContent = "🎉 You guessed it: HORDA!";
+  disableInput();
+  const countSpan = document.getElementById(`count-${currentRow + 1}`);
+  if (countSpan) countSpan.textContent = parseInt(countSpan.textContent) + 1;
+  updateGuessDistribution();
+  showStatsModal();
+} else if (currentRow === 5) {
+  message.textContent = "💀 The word was HORDA.";
+  disableInput();
+  showStatsModal();
+} else {
+  currentRow++;
+  currentCol = 0;
+}
 }
 
 function disableInput() {
@@ -135,3 +140,37 @@ document.addEventListener("keydown", (event) => {
     handleKey(key.toUpperCase());
   }
 });
+
+function showStatsModal() {
+  document.getElementById("stats-modal").style.display = "flex";
+}
+document.getElementById("close-modal").onclick = function() {
+  document.getElementById("stats-modal").style.display = "none";
+};
+document.getElementById("play-again").onclick = function() {
+  location.reload();
+};
+document.getElementById("share").onclick = function() {
+  navigator.clipboard.writeText("I played HORDLE! https://raccable.github.io/Hordle/");
+  alert("Result copied to clipboard!");
+};
+
+function updateGuessDistribution() {
+  // Get counts from inputs (or store in an array for a real game)
+  let counts = [];
+  for (let i = 1; i <= 6; i++) {
+    // If you use <input> elements, you can get their values like this:
+    // counts[i-1] = parseInt(document.querySelector(`#stats-modal table tr:nth-child(${i}) input`).value) || 0;
+    // But with the bar chart, store counts in localStorage or a JS array instead.
+    counts[i-1] = parseInt(document.getElementById(`count-${i}`).textContent) || 0;
+  }
+  // Find the max for scaling
+  const max = Math.max(...counts, 1);
+  for (let i = 1; i <= 6; i++) {
+    const bar = document.getElementById(`bar-${i}`);
+    const count = counts[i-1];
+    bar.style.width = (count === 0 ? 10 : (220 * count / max)) + "px";
+    bar.classList.toggle("active", count > 0 && count === Math.max(...counts));
+    document.getElementById(`count-${i}`).textContent = count;
+  }
+}
